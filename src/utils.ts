@@ -65,7 +65,7 @@ export const calculateDates = (
             threeDays.data.push(currdtstr);
             startThreeDays = currentUnix + 3 * SECONDS_IN_DAY;
         }
-        if (currdt.isSame(initialDate, 'second')) {
+        if (currdt.isSame(initialDate, 'day')) {
             day.index = day.data.length - 1;
             threeDays.index = threeDays.data.length - 1;
             week.index = week.data.length - 1;
@@ -173,7 +173,7 @@ const buildEvent = (
         const currentDate = options.startDate.add(options.dayIndex, 'day');
         const diffCurrent = eventStart.diff(currentDate, 'minute') / 60;
         if (diffCurrent < 0) {
-            start = 0 + diffCurrent - options.startHour;
+            start = diffCurrent - options.startHour;
         }
     }
 
@@ -437,5 +437,5 @@ export const roundTo = (hour: number, step: number, type: 'up' | 'down') => {
 export function stringToDate_calendar(s: string): Date {
     if (!s) return new Date();
     let split = s.split('-');
-    return new Date(parseInt(split[2]), parseInt(split[1]), parseInt(split[0]));
+    return new Date(parseInt(split[2]), parseInt(split[1]) - 1, parseInt(split[0])); // month starts at 0.....
 }

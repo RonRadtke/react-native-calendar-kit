@@ -9,6 +9,8 @@ import MultipleDayBar from './MultipleDayBar';
 import SingleDayBar from './SingleDayBar';
 import {stringToDate_calendar} from 'app/components/Calendar3/utils';
 
+import ProgressBar from './ProgressBar';
+
 interface TimelineHeaderProps {
     renderDayBarItem?: (props: DayBarItemProps) => JSX.Element;
     onPressDayNum?: (date: string) => void;
@@ -21,6 +23,7 @@ const TimelineHeader = ({
                             renderDayBarItem,
                             onPressDayNum,
                             highlightDates,
+                            isLoading,
                             selectedEventId,
                         }: TimelineHeaderProps) => {
     const {
@@ -200,6 +203,7 @@ const TimelineHeader = ({
         >
             {syncedLists ? _renderDayBarList() : _renderDayBarView()}
             {selectedEventId && <View style={styles.disabledFrame}/>}
+            {isLoading && <ProgressBar barColor={theme.loadingBarColor}/>}
         </View>
     );
 };

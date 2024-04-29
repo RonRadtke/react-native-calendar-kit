@@ -15,7 +15,7 @@ const SingleDayBar = ({
     const _renderDay = () => {
         const dateByIndex = startDate;
         const dateStr = dateByIndex.format('dd-MM-yyyy');
-        const [dayNameText, dayNum] = dateByIndex.format('ddd')
+        const [dayNameText, dayNum] = dateByIndex.format('dd-MM-yyyy')
             .split(',');
         const highlightDate = highlightDates?.[dateStr];
 

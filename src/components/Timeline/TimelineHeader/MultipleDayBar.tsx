@@ -18,7 +18,7 @@ const MultipleDayBar = ({
     const _renderDay = (dayIndex: number) => {
         const dateByIndex = startDate.add(dayIndex, 'day');
         const dateStr = dateByIndex.format('dd-MM-yyyy');
-        const [dayNameText, dayNum] = dateByIndex.format('ddd')
+        const [dayNameText, dayNum] = dateByIndex.format('dd-MM, eee')
             .split(',');
         const highlightDate = highlightDates?.[dateStr];
 
@@ -87,5 +87,5 @@ const styles = StyleSheet.create({
         backgroundColor: DEFAULT_PROPS.WHITE_COLOR,
     },
     dayName: {color: DEFAULT_PROPS.SECONDARY_COLOR, fontSize: 12},
-    dayNumber: {color: DEFAULT_PROPS.SECONDARY_COLOR, fontSize: 16},
+    dayNumber: {color: DEFAULT_PROPS.SECONDARY_COLOR, fontSize: 10},
 });

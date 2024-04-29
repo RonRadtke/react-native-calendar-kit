@@ -17,7 +17,6 @@ interface TimelinePageProps {
     onPressBackground?: (date: string, event: GestureResponderEvent) => void;
     onLongPressBackground?: (date: string, event: GestureResponderEvent) => void;
     onPressOutBackground?: (date: string, event: GestureResponderEvent) => void;
-    holidays?: string[];
     events?: { [date: string]: EventItem[] };
     onPressEvent?: (eventItem: PackedEvent) => void;
     onLongPressEvent?: (eventItem: PackedEvent) => void;

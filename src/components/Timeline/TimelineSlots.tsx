@@ -132,7 +132,6 @@ const TimelineSlots = ({
             <TimelinePage
                 startDate={stringToDate_calendar(item)}
                 isLoading={extraData?.isLoading}
-                holidays={extraData?.holidays}
                 events={extraData?.events}
                 selectedEventId={extraData?.selectedEventId}
                 renderEventContent={renderEventContent}
