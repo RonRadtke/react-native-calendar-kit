@@ -1,48 +1,40 @@
-import moment from 'moment-timezone';
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, { SharedValue, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 interface NowIndicatorProps {
   dayIndex: number;
   width: number;
   timeIntervalHeight: SharedValue<number>;
   nowIndicatorColor?: string;
-  tzOffset: string;
   start: number;
   updateCurrentDate: () => void;
   nowIndicatorInterval: number;
 }
 
-const getCurrentMinutes = (tzOffset: string) => {
-  const now = moment.tz(tzOffset);
-  const date = now.format('YYYY-MM-DD');
-  const minutes = now.hour() * 60 + now.minute();
+const getCurrentMinutes = (): {date:string, minutes:number} => {
+  const now =new Date();
+  const date = now.format('DD-MM-YYYY');
+  const minutes = now.getHours() * 60 + now.getMinutes();
   return { date, minutes };
 };
 
 const NowIndicator = ({
-  width,
-  dayIndex,
-  timeIntervalHeight,
-  nowIndicatorColor,
-  tzOffset,
-  start,
-  updateCurrentDate,
-  nowIndicatorInterval,
-}: NowIndicatorProps) => {
-  const initial = useRef(getCurrentMinutes(tzOffset));
+                        width,
+                        dayIndex,
+                        timeIntervalHeight,
+                        nowIndicatorColor,
+                        start,
+                        updateCurrentDate,
+                        nowIndicatorInterval,
+                      }: NowIndicatorProps) => {
+  const initial = useRef(getCurrentMinutes());
   const translateY = useSharedValue(0);
   const intervalCallbackId = useRef<any>(null);
 
   const prevMinutes = useRef(initial.current.minutes);
   const updateLinePosition = useCallback(() => {
-    const { date, minutes } = getCurrentMinutes(tzOffset);
+    const { date, minutes } = getCurrentMinutes();
     if (prevMinutes.current === minutes) {
       return;
     }
@@ -56,7 +48,7 @@ const NowIndicator = ({
     translateY.value = withTiming(newY, {
       duration: 500,
     });
-  }, [tzOffset, timeIntervalHeight.value, translateY, updateCurrentDate]);
+  }, [timeIntervalHeight.value, translateY, updateCurrentDate]);
 
   useEffect(() => {
     updateLinePosition();
@@ -65,7 +57,7 @@ const NowIndicator = ({
     }
     intervalCallbackId.current = setInterval(
       updateLinePosition,
-      nowIndicatorInterval
+      nowIndicatorInterval,
     );
     return () => {
       if (intervalCallbackId.current) {
@@ -74,7 +66,8 @@ const NowIndicator = ({
     };
   }, [nowIndicatorInterval, updateLinePosition]);
 
-  const animStyle = useAnimatedStyle(() => {
+  // @ts-ignore
+    const animStyle = useAnimatedStyle(() => {
     return {
       top: (initial.current.minutes / 60 - start) * timeIntervalHeight.value,
       transform: [{ translateY: translateY.value }],
@@ -93,7 +86,7 @@ const NowIndicator = ({
   );
 };
 
-export default memo(NowIndicator);
+export default NowIndicator;
 
 const styles = StyleSheet.create({
   container: { position: 'absolute', justifyContent: 'center' },

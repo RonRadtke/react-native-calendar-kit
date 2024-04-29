@@ -1,4 +1,3 @@
-import moment from 'moment-timezone';
 import { Dimensions } from 'react-native';
 
 export const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -7,9 +6,9 @@ export const SCREEN_HEIGHT = Dimensions.get('window').height;
 export const DEFAULT_PROPS = {
   VIEW_MODE: 'week' as const,
   FIRST_DAY: 1,
-  MIN_DATE: moment().subtract(1, 'y').format('YYYY-MM-DD'),
-  MAX_DATE: moment().add(1, 'y').format('YYYY-MM-DD'),
-  INITIAL_DATE: moment().format('YYYY-MM-DD'),
+  MIN_DATE: new Date().subtract(1, 'year'),
+  MAX_DATE: new Date().add(1, 'year'),
+  INITIAL_DATE: new Date(),
   START: 0,
   END: 24,
   TIME_INTERVAL: 60,

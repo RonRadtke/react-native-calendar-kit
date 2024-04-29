@@ -1,21 +1,8 @@
 import { AnimatedFlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import React, { useEffect, useMemo, useRef } from 'react';
-import {
-  Animated as RNAnimated,
-  GestureResponderEvent,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  Platform,
-  StyleSheet,
-  View,
-  ViewabilityConfig,
-  ViewToken,
-} from 'react-native';
+import { Animated as RNAnimated, GestureResponderEvent, NativeScrollEvent, NativeSyntheticEvent, Platform, StyleSheet, View, ViewabilityConfig, ViewToken } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
+import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { useTimelineCalendarContext } from '../../context/TimelineProvider';
 import type { EventItem, PackedEvent, UnavailableItemProps } from '../../types';
 import DragEditItem from './DragEditItem';
@@ -35,11 +22,11 @@ interface TimelineSlotsProps {
   onLongPressEvent?: (eventItem: PackedEvent) => void;
   renderEventContent?: (
     event: PackedEvent,
-    timeIntervalHeight: SharedValue<number>
+    timeIntervalHeight: SharedValue<number>,
   ) => JSX.Element;
   renderSelectedEventContent?: (
     event: PackedEvent,
-    timeIntervalHeight: SharedValue<number>
+    timeIntervalHeight: SharedValue<number>,
   ) => JSX.Element;
   selectedEvent?: PackedEvent;
   onEndDragSelectedEvent?: (event: PackedEvent) => void;
@@ -49,19 +36,19 @@ interface TimelineSlotsProps {
 }
 
 const TimelineSlots = ({
-  onDateChanged,
-  isDragging,
-  isLoading,
-  holidays,
-  events,
-  selectedEvent,
-  onEndDragSelectedEvent,
-  editEventGestureEnabled = true,
-  renderEventContent,
-  renderSelectedEventContent,
-  EditIndicatorComponent,
-  ...other
-}: TimelineSlotsProps) => {
+                         onDateChanged,
+                         isDragging,
+                         isLoading,
+                         holidays,
+                         events,
+                         selectedEvent,
+                         onEndDragSelectedEvent,
+                         editEventGestureEnabled = true,
+                         renderEventContent,
+                         renderSelectedEventContent,
+                         EditIndicatorComponent,
+                         ...other
+                       }: TimelineSlotsProps) => {
   const {
     timelineVerticalListRef,
     spaceFromBottom,
@@ -117,7 +104,7 @@ const TimelineSlots = ({
           currentIndex.value = pageIndex;
         }
       },
-    }
+    },
   );
 
   const extraValues = useMemo(
@@ -136,7 +123,7 @@ const TimelineSlots = ({
       events,
       selectedEvent?.id,
       currentDate,
-    ]
+    ],
   );
 
   const _renderPage = ({ item, extraData }: ListRenderItemInfo<string>) => {
@@ -179,12 +166,12 @@ const TimelineSlots = ({
           isScrolling.current = false;
         }, 1000);
       }
-    }
+    },
   ).current;
 
   const _onVerticalScroll = ({
-    nativeEvent: { contentOffset },
-  }: NativeSyntheticEvent<NativeScrollEvent>) => {
+                               nativeEvent: { contentOffset },
+                             }: NativeSyntheticEvent<NativeScrollEvent>) => {
     offsetY.value = contentOffset.y;
   };
 

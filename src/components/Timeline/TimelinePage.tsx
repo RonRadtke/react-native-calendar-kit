@@ -1,16 +1,7 @@
 import times from 'lodash/times';
-import moment from 'moment-timezone';
 import React, { useMemo } from 'react';
-import {
-  GestureResponderEvent,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from 'react-native';
-import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
+import { GestureResponderEvent, StyleSheet, View, ViewStyle } from 'react-native';
+import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { COLUMNS } from '../../constants';
 import { useTimelineCalendarContext } from '../../context/TimelineProvider';
 import type { EventItem, PackedEvent, UnavailableItemProps } from '../../types';
@@ -21,7 +12,7 @@ import TimelineBoard from './TimelineBoard';
 import TimelineHours from './TimelineHours';
 
 interface TimelinePageProps {
-  startDate: string;
+  startDate: Date;
   isLoading?: boolean;
   onPressBackground?: (date: string, event: GestureResponderEvent) => void;
   onLongPressBackground?: (date: string, event: GestureResponderEvent) => void;
@@ -32,32 +23,32 @@ interface TimelinePageProps {
   onLongPressEvent?: (eventItem: PackedEvent) => void;
   renderEventContent?: (
     event: PackedEvent,
-    timeIntervalHeight: SharedValue<number>
+    timeIntervalHeight: SharedValue<number>,
   ) => JSX.Element;
   selectedEventId?: string;
   renderCustomUnavailableItem?: (props: UnavailableItemProps) => JSX.Element;
   renderHalfLineCustom?: (width: number) => JSX.Element;
   halfLineContainerStyle?: ViewStyle;
-  currentDate: string;
+  currentDate: Date;
 }
 
 const TimelinePage = ({
-  startDate,
-  onPressBackground,
-  onLongPressBackground,
-  onPressOutBackground,
-  isLoading,
-  holidays,
-  events,
-  onPressEvent,
-  onLongPressEvent,
-  renderEventContent,
-  selectedEventId,
-  renderCustomUnavailableItem,
-  renderHalfLineCustom,
-  halfLineContainerStyle,
-  currentDate,
-}: TimelinePageProps) => {
+                        startDate,
+                        onPressBackground,
+                        onLongPressBackground,
+                        onPressOutBackground,
+                        isLoading,
+                        holidays,
+                        events,
+                        onPressEvent,
+                        onLongPressEvent,
+                        renderEventContent,
+                        selectedEventId,
+                        renderCustomUnavailableItem,
+                        renderHalfLineCustom,
+                        halfLineContainerStyle,
+                        currentDate,
+                      }: TimelinePageProps) => {
   const {
     rightSideWidth,
     viewMode,
@@ -72,7 +63,6 @@ const TimelinePage = ({
     rightEdgeSpacing,
     theme,
     eventAnimatedDuration,
-    tzOffset,
     updateCurrentDate,
     nowIndicatorInterval,
     isPinchActive,
@@ -89,7 +79,6 @@ const TimelinePage = ({
         startDate,
         overlapEventsSpacing,
         rightEdgeSpacing,
-        tzOffset,
       }),
     [
       columnWidth,
@@ -99,8 +88,7 @@ const TimelinePage = ({
       start,
       startDate,
       viewMode,
-      tzOffset,
-    ]
+    ],
   );
 
   const boardStyle = useAnimatedStyle(() => {
@@ -111,7 +99,7 @@ const TimelinePage = ({
 
   const _onPressBackgroundHandler = (
     type: 'longPress' | 'press' | 'pressOut',
-    event: GestureResponderEvent
+    event: GestureResponderEvent,
   ) => {
     if (!event.nativeEvent.locationX || !event.nativeEvent.locationY) {
       return;
@@ -121,7 +109,7 @@ const TimelinePage = ({
       event.nativeEvent.locationY,
       startDate,
       heightByTimeInterval.value,
-      columnWidth
+      columnWidth,
     );
 
     switch (type) {
@@ -160,15 +148,15 @@ const TimelinePage = ({
   };
 
   const _renderTimelineColumn = (dayIndex: number) => {
-    const dateByColumn = moment.tz(startDate, tzOffset).add(dayIndex, 'd');
-    const dateStr = dateByColumn.format('YYYY-MM-DD');
+    const dateByColumn = startDate.add(dayIndex, 'day');
+    const dateStr = dateByColumn.format('DD-MM-YYYY');
     const isToday = dateStr === currentDate;
 
     return (
       <React.Fragment key={dayIndex}>
         <View pointerEvents="box-none" style={styles.eventsContainer}>
           {eventsByColumns[dayIndex]?.map((event) =>
-            _renderEvent(event, dayIndex)
+            _renderEvent(event, dayIndex),
           )}
         </View>
         {showNowIndicator && isToday && (
@@ -177,7 +165,6 @@ const TimelinePage = ({
             width={columnWidth}
             dayIndex={dayIndex}
             nowIndicatorColor={theme.nowIndicatorColor}
-            tzOffset={tzOffset}
             start={start}
             updateCurrentDate={updateCurrentDate}
             nowIndicatorInterval={nowIndicatorInterval}

@@ -1,6 +1,5 @@
 import times from 'lodash/times';
-import moment from 'moment-timezone';
-import React, { memo, useMemo } from 'react';
+import React from 'react';
 import {
   GestureResponderEvent,
   StyleSheet,
@@ -13,12 +12,11 @@ import { useTimelineCalendarContext } from '../../../context/TimelineProvider';
 import type { UnavailableItemProps } from '../../../types';
 import type { HourItem } from '../TimelineHours';
 import HorizontalLine from './HorizontalLine';
-import UnavailableMultipleDays from './UnavailableMultipleDays';
 import VerticalBlock from './VerticalBlock';
 import VerticalLine from './VerticalLine';
 
 interface TimelineBoardProps {
-  startDate: string;
+  startDate: Date;
   onPressBackgroundHandler: (
     type: 'longPress' | 'press' | 'pressOut',
     event: GestureResponderEvent
@@ -62,9 +60,9 @@ const TimelineBoard = ({
     );
   };
 
-  const minDayUnix = useMemo(() => moment(minDate).unix(), [minDate]);
-  const maxDayUnix = useMemo(() => moment(maxDate).unix(), [maxDate]);
-  const startDayUnix = useMemo(() => moment(startDate).unix(), [startDate]);
+  const minDayUnix = minDate.unix();
+  const maxDayUnix = maxDate.unix();
+  const startDayUnix =  startDate.unix();
 
   const _renderVerticalBlock = (dayIndex: number) => {
     if (!unavailableHours && !holidays) {
@@ -79,9 +77,9 @@ const TimelineBoard = ({
       if (Array.isArray(unavailableHours)) {
         unavailableHour = unavailableHours;
       } else {
-        const current = moment.unix(currentUnix);
-        const currentDateStr = current.format('YYYY-MM-DD');
-        const currentWeekDay = current.day();
+        const current = new Date(currentUnix * 1000);
+        const currentDateStr = current.format('DD-MM-YYYY');
+        const currentWeekDay = current.getDay();
         unavailableHour =
           unavailableHours?.[currentDateStr] ||
           unavailableHours?.[currentWeekDay];
@@ -90,7 +88,7 @@ const TimelineBoard = ({
 
     let isDayDisabled = false;
     if (holidays?.length) {
-      const dateStr = moment.unix(currentUnix).format('YYYY-MM-DD');
+      const dateStr = new Date(currentUnix * 1000).format('DD-MM-YYYY');
       isDayDisabled = holidays.includes(dateStr);
     }
 
@@ -107,30 +105,9 @@ const TimelineBoard = ({
   };
 
   const numOfDays = COLUMNS[viewMode];
-  const _renderOutsideDateLimit = () => {
-    if (numOfDays !== 1) {
-      const diffDayMin = (minDayUnix - startDayUnix) / SECONDS_IN_DAY;
-      const endDayUnix = startDayUnix + (numOfDays - 1) * SECONDS_IN_DAY;
-      const diffDayMax = (endDayUnix - maxDayUnix) / SECONDS_IN_DAY;
-
-      if (diffDayMin > 0 || diffDayMax > 0) {
-        return (
-          <UnavailableMultipleDays
-            left={diffDayMin > 0 ? 0 : undefined}
-            right={diffDayMax > 0 ? 0 : undefined}
-            diffDays={diffDayMin > 0 ? diffDayMin : diffDayMax}
-            renderCustomUnavailableItem={renderCustomUnavailableItem}
-          />
-        );
-      }
-    }
-
-    return;
-  };
 
   return (
     <View style={StyleSheet.absoluteFill}>
-      {_renderOutsideDateLimit()}
       {times(numOfDays, _renderVerticalBlock)}
       {hours.map(_renderHorizontalLine)}
       <TouchableWithoutFeedback
@@ -145,4 +122,4 @@ const TimelineBoard = ({
   );
 };
 
-export default memo(TimelineBoard);
+export default TimelineBoard;

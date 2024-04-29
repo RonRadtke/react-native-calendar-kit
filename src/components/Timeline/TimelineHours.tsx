@@ -1,9 +1,6 @@
 import React, { memo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
+import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { DEFAULT_PROPS } from '../../constants';
 import { useTimelineCalendarContext } from '../../context/TimelineProvider';
 import type { ThemeProperties } from '../../types';
@@ -52,12 +49,12 @@ const TimelineHours = () => {
 export default memo(TimelineHours);
 
 const HourItem = ({
-  hour,
-  index,
-  timeIntervalHeight,
-  spaceContent,
-  theme,
-}: {
+                    hour,
+                    index,
+                    timeIntervalHeight,
+                    spaceContent,
+                    theme,
+                  }: {
   hour: HourItem;
   index: number;
   timeIntervalHeight: SharedValue<number>;

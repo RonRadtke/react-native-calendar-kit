@@ -1,14 +1,8 @@
-import isEqual from 'lodash/isEqual';
-import React, { memo } from 'react';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, { SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { DEFAULT_PROPS } from '../../constants';
 import type { PackedEvent, ThemeProperties } from '../../types';
-import { shallowEqual } from '../../utils';
 
 export interface EventBlockProps {
   event: PackedEvent;
@@ -19,7 +13,7 @@ export interface EventBlockProps {
   timeIntervalHeight: SharedValue<number>;
   renderEventContent?: (
     event: PackedEvent,
-    timeIntervalHeight: SharedValue<number>
+    timeIntervalHeight: SharedValue<number>,
   ) => JSX.Element;
   selectedEventId?: string;
   theme: ThemeProperties;
@@ -31,19 +25,19 @@ export interface EventBlockProps {
 const EVENT_DEFAULT_COLOR = '#FFFFFF';
 
 const EventBlock = ({
-  event,
-  dayIndex,
-  columnWidth,
-  onPressEvent,
-  onLongPressEvent,
-  renderEventContent,
-  theme,
-  selectedEventId,
-  eventAnimatedDuration,
-  isPinchActive,
-  timeIntervalHeight,
-  heightByTimeInterval,
-}: EventBlockProps) => {
+                      event,
+                      dayIndex,
+                      columnWidth,
+                      onPressEvent,
+                      onLongPressEvent,
+                      renderEventContent,
+                      theme,
+                      selectedEventId,
+                      eventAnimatedDuration,
+                      isPinchActive,
+                      timeIntervalHeight,
+                      heightByTimeInterval,
+                    }: EventBlockProps) => {
   const _onLongPress = () => {
     const eventParams = {
       ...event,
@@ -137,16 +131,7 @@ const EventBlock = ({
   );
 };
 
-const areEqual = (prev: EventBlockProps, next: EventBlockProps) => {
-  const { event: prevEvent, theme: prevTheme, ...prevOther } = prev;
-  const { event: nextEvent, theme: nextTheme, ...nextOther } = next;
-  const isSameEvent = isEqual(prevEvent, nextEvent);
-  const isSameTheme = isEqual(prevTheme, nextTheme);
-  const isSameOther = shallowEqual(prevOther, nextOther);
-  return isSameEvent && isSameTheme && isSameOther;
-};
-
-export default memo(EventBlock, areEqual);
+export default EventBlock;
 
 const styles = StyleSheet.create({
   eventBlock: {

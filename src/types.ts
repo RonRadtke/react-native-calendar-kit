@@ -5,29 +5,16 @@ import type {
   ViewStyle,
 } from 'react-native';
 import type { SharedValue } from 'react-native-reanimated';
-import type { TimeZone, timeZoneData } from './assets/timeZone';
 
 export interface TimelineCalendarHandle {
   goToDate: (props?: {
-    date?: string;
+    date?: Date;
     hourScroll?: boolean;
     animatedDate?: boolean;
     animatedHour?: boolean;
   }) => void;
   goToNextPage: (animated?: boolean) => void;
   goToPrevPage: (animated?: boolean) => void;
-  getZones: () => {
-    name: string;
-    alternativeName: string;
-    raw: string;
-    countryName: string;
-  }[];
-  getZone: (zoneName: keyof typeof timeZoneData) => {
-    name: string;
-    alternativeName: string;
-    raw: string;
-    countryName: string;
-  };
   getHour: () => number;
   getDate: () => string;
   goToHour: (hour: number, animated?: boolean) => void;
@@ -63,7 +50,7 @@ export interface TimelineProps {
   isLoading?: boolean;
   /** Set unavailable days
    *
-   * Format of the item in the array: `YYYY-MM-DD`
+   * Format of the item in the array: `DD-MM-YYYY`
    */
   holidays?: string[];
   /** Events will be displayed in the timeline view. events is a array of {@link EventItem}*/
@@ -135,23 +122,20 @@ export interface TimelineProviderProps {
 
   /** Minimum display date.
    *
-   ** Format: YYYY-MM-DD.
    ** Default: 2 year ago from today
    */
-  minDate?: string;
+  minDate?: Date;
 
   /** Maximum display date.
    *
-   ** Format: YYYY-MM-DD.
    ** Default: 2 year later from today
    */
-  maxDate?: string;
+  maxDate?: Date;
 
   /** Initial display date.
    *
-   ** Format: YYYY-MM-DD.
    ** Default: today  */
-  initialDate?: string;
+  initialDate?: Date;
 
   /** Day start time (in hours)
    *
@@ -311,9 +295,6 @@ export interface TimelineProviderProps {
    **/
   useHaptic?: boolean;
 
-  /** Use calendar in different time zones */
-  timeZone?: TimeZone;
-
   /** Update indicator at specified intervals (in milliseconds).
    *
    ** Default: `1000`
@@ -333,16 +314,15 @@ export interface TimelineProviderProps {
 
 export interface DayBarItemProps {
   width: number;
-  startDate: string;
+  startDate: Date;
   columnWidth: number;
   viewMode: CalendarViewMode;
   hourWidth: number;
   onPressDayNum?: (date: string) => void;
   theme: ThemeProperties;
-  locale: LocaleType;
   highlightDates?: HighlightDates;
   tzOffset: string;
-  currentDate: string;
+  currentDate: Date;
 }
 
 export interface ThemeProperties {
@@ -408,10 +388,8 @@ export type UnavailableHoursStyle = Record<
 export interface EventItem {
   /** Unique ID for the event. */
   id: string;
-  /** Start date of the event. (ISOString) */
-  start: string;
-  /** End date of the event. (ISOString) */
-  end: string;
+  start: Date;
+  end: Date;
   /** Title of the event */
   title?: string;
   /** Background color of the event */
@@ -440,7 +418,7 @@ export type HighlightDates = {
 };
 
 export interface OnChangeProps {
-  date: string;
+  date: Date;
   index: number;
   length: number;
   prevIndex: number | null;

@@ -1,4 +1,3 @@
-import moment from 'moment-timezone';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DEFAULT_PROPS } from '../../../constants';
@@ -6,21 +5,17 @@ import type { DayBarItemProps } from '../../../types';
 import { getDayBarStyle } from '../../../utils';
 
 const SingleDayBar = ({
-  width,
-  startDate,
-  theme,
-  locale,
-  highlightDates,
-  onPressDayNum,
-  currentDate,
-  tzOffset,
-}: DayBarItemProps) => {
+                        width,
+                        startDate,
+                        theme,
+                        highlightDates,
+                        onPressDayNum,
+                        currentDate,
+                      }: DayBarItemProps) => {
   const _renderDay = () => {
-    const dateByIndex = moment.tz(startDate, tzOffset);
-    const dateStr = dateByIndex.format('YYYY-MM-DD');
-    const [dayNameText, dayNum] = dateByIndex
-      .locale(locale)
-      .format('ddd,DD')
+    const dateByIndex = startDate;
+    const dateStr = dateByIndex.format('DD-MM-YYYY');
+    const [dayNameText, dayNum] = dateByIndex.format('ddd,DD')
       .split(',');
     const highlightDate = highlightDates?.[dateStr];
 
@@ -28,7 +23,7 @@ const SingleDayBar = ({
       currentDate,
       dateByIndex,
       theme,
-      highlightDate
+      highlightDate,
     );
 
     return (

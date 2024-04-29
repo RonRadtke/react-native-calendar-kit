@@ -1,27 +1,7 @@
-import moment from 'moment-timezone';
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-} from 'react';
-import {
-  GestureResponderEvent,
-  LayoutChangeEvent,
-  StyleSheet,
-  View,
-} from 'react-native';
-import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-} from 'react-native-gesture-handler';
-import {
-  runOnJS,
-  useAnimatedReaction,
-  withTiming,
-} from 'react-native-reanimated';
-import { timeZoneData } from '../../assets/timeZone';
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo } from 'react';
+import { GestureResponderEvent, LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { runOnJS, useAnimatedReaction, withTiming } from 'react-native-reanimated';
 import { COLUMNS, DEFAULT_PROPS } from '../../constants';
 import { useTimelineCalendarContext } from '../../context/TimelineProvider';
 import useDragCreateGesture from '../../hooks/useDragCreateGesture';
@@ -32,6 +12,7 @@ import { clampValues, groupEventsByDate } from '../../utils';
 import DragCreateItem from './DragCreateItem';
 import TimelineHeader from './TimelineHeader';
 import TimelineSlots from './TimelineSlots';
+import { startOfDay } from 'date-fns';
 
 const Timeline: React.ForwardRefRenderFunction<
   TimelineCalendarHandle,
@@ -50,7 +31,7 @@ const Timeline: React.ForwardRefRenderFunction<
     onTimeIntervalHeightChange,
     ...other
   },
-  ref
+  ref,
 ) => {
   const {
     timelineLayoutRef,
@@ -70,7 +51,6 @@ const Timeline: React.ForwardRefRenderFunction<
     isShowHeader,
     currentIndex,
     pages,
-    tzOffset,
     maxTimeIntervalHeight,
     updateCurrentDate,
     offsetY,
@@ -85,22 +65,16 @@ const Timeline: React.ForwardRefRenderFunction<
     ref,
     () => ({
       goToDate: (props?: {
-        date?: string;
+        date?: Date;
         hourScroll?: boolean;
         animatedDate?: boolean;
         animatedHour?: boolean;
       }) => {
         const numOfDays =
           viewMode === 'workWeek' ? COLUMNS.week : COLUMNS[viewMode];
-        const currentDay = moment.tz(props?.date, tzOffset);
-        const firstDateMoment = moment.tz(
-          firstDate.current[viewMode],
-          tzOffset
-        );
-        const diffDays = currentDay
-          .clone()
-          .startOf('D')
-          .diff(firstDateMoment, 'd');
+        const currentDay = props?.date || new Date();
+        const firstDateMoment = firstDate.current[viewMode] || new Date();
+        const diffDays = startOfDay(currentDay).diff(firstDateMoment, 'day');
         const pageIndex = Math.floor(diffDays / numOfDays);
         if (pageIndex < 0 || pageIndex > totalPages[viewMode] - 1) {
           return;
@@ -112,39 +86,34 @@ const Timeline: React.ForwardRefRenderFunction<
         });
 
         if (props?.hourScroll) {
-          const minutes = currentDay.hour() * 60 + currentDay.minute();
+          const minutes = currentDay.getHours() * 60 + currentDay.getMinutes();
           const subtractMinutes = minutes - start * 60;
           const position =
-            (subtractMinutes * timeIntervalHeight.value) / 60 + spaceFromTop;
+            subtractMinutes * timeIntervalHeight.value / 60 + spaceFromTop;
           const offset = timelineLayoutRef.current.height / 2;
           goToOffsetY(Math.max(0, position - offset), props?.animatedHour);
         }
       },
       goToNextPage: goToNextPage,
       goToPrevPage: goToPrevPage,
-      getZones: () => Object.values(timeZoneData),
-      getZone: (key: keyof typeof timeZoneData) => timeZoneData[key],
       getHour: () => {
         const position = Math.max(0, offsetY.value - spaceFromTop + 8);
-        const minutes = (position * 60) / heightByTimeInterval.value;
+        const minutes = position * 60 / heightByTimeInterval.value;
         const hour = minutes / 60 + start;
         return Math.max(0, hour);
       },
       getDate: () => {
         const numOfDays =
           viewMode === 'workWeek' ? COLUMNS.week : COLUMNS[viewMode];
-        const firstDateMoment = moment.tz(
-          firstDate.current[viewMode],
-          tzOffset
-        );
+        const firstDateMoment = firstDate.current[viewMode] || new Date();
         const pageIndex = currentIndex.value;
-        const currentDay = firstDateMoment.add(pageIndex * numOfDays, 'd');
+        const currentDay = firstDateMoment.add(pageIndex * numOfDays, 'day');
         return currentDay.toISOString();
       },
       goToHour: (hour: number, animated?: boolean) => {
         const minutes = (hour - start) * 60;
         const position =
-          (minutes * heightByTimeInterval.value) / 60 + spaceFromTop;
+          minutes * heightByTimeInterval.value / 60 + spaceFromTop;
         goToOffsetY(Math.max(0, position - 8), animated);
       },
       forceUpdateNowIndicator: updateCurrentDate,
@@ -156,7 +125,7 @@ const Timeline: React.ForwardRefRenderFunction<
         const clampedHeight = clampValues(
           newHeight,
           minTimeIntervalHeight.value,
-          maxTimeIntervalHeight
+          maxTimeIntervalHeight,
         );
         const pinchYNormalized = offsetY.value / timeIntervalHeight.value;
         const pinchYScale = clampedHeight * pinchYNormalized;
@@ -170,7 +139,6 @@ const Timeline: React.ForwardRefRenderFunction<
       goToPrevPage,
       updateCurrentDate,
       viewMode,
-      tzOffset,
       firstDate,
       totalPages,
       timelineHorizontalListRef,
@@ -186,7 +154,7 @@ const Timeline: React.ForwardRefRenderFunction<
       minTimeIntervalHeight.value,
       maxTimeIntervalHeight,
       timelineVerticalListRef,
-    ]
+    ],
   );
 
   useAnimatedReaction(
@@ -197,7 +165,7 @@ const Timeline: React.ForwardRefRenderFunction<
       }
       runOnJS(onTimeIntervalHeightChange)(next);
     },
-    [onTimeIntervalHeightChange]
+    [onTimeIntervalHeightChange],
   );
 
   useEffect(() => {
@@ -205,13 +173,13 @@ const Timeline: React.ForwardRefRenderFunction<
       return;
     }
     requestAnimationFrame(() => {
-      const current = moment.tz(tzOffset);
-      const isSameDate = current.format('YYYY-MM-DD') === initialDate.current;
+      const current = new Date();
+      const isSameDate = current.isSame(initialDate.current, 'second');
       if (scrollToNow && isSameDate) {
-        const minutes = current.hour() * 60 + current.minute();
+        const minutes = current.getHours() * 60 + current.getMinutes();
         const subtractMinutes = minutes - start * 60;
         const position =
-          (subtractMinutes * heightByTimeInterval.value) / 60 + spaceFromTop;
+          subtractMinutes * heightByTimeInterval.value / 60 + spaceFromTop;
         const offset = timelineLayoutRef.current.height / 2;
         goToOffsetY(Math.max(0, position - offset), true);
       }
@@ -223,7 +191,7 @@ const Timeline: React.ForwardRefRenderFunction<
     if (!minTimeIntervalHeight.value) {
       const minHeight = Math.max(
         layout.height / (totalHours + 1),
-        DEFAULT_PROPS.MIN_TIME_INTERVAL_HEIGHT
+        DEFAULT_PROPS.MIN_TIME_INTERVAL_HEIGHT,
       );
       minTimeIntervalHeight.value = minHeight;
     }
@@ -252,7 +220,7 @@ const Timeline: React.ForwardRefRenderFunction<
 
   const _onLongPressBackground = (
     date: string,
-    event: GestureResponderEvent
+    event: GestureResponderEvent,
   ) => {
     if (allowDragToCreate && !selectedEvent) {
       onLongPress(event);
@@ -261,8 +229,8 @@ const Timeline: React.ForwardRefRenderFunction<
   };
 
   const groupedEvents = useMemo(
-    () => groupEventsByDate(events, tzOffset),
-    [events, tzOffset]
+    () => groupEventsByDate(events),
+    [events],
   );
 
   useAnimatedReaction(
@@ -281,14 +249,14 @@ const Timeline: React.ForwardRefRenderFunction<
         });
       }
     },
-    [viewMode]
+    [viewMode],
   );
 
   return (
     <GestureHandlerRootView
       style={[styles.container, { backgroundColor: theme.backgroundColor }]}
     >
-      {isShowHeader && (
+      {isShowHeader &&
         <TimelineHeader
           renderDayBarItem={renderDayBarItem}
           onPressDayNum={onPressDayNum}
@@ -296,7 +264,7 @@ const Timeline: React.ForwardRefRenderFunction<
           highlightDates={highlightDates}
           selectedEventId={selectedEvent?.id}
         />
-      )}
+      }
       <View style={styles.content} onLayout={_onContentLayout}>
         <GestureDetector gesture={Gesture.Race(dragCreateGesture, zoomGesture)}>
           <TimelineSlots
@@ -308,7 +276,7 @@ const Timeline: React.ForwardRefRenderFunction<
             onLongPressBackground={_onLongPressBackground}
           />
         </GestureDetector>
-        {isDraggingCreate && (
+        {isDraggingCreate &&
           <DragCreateItem
             offsetX={dragXPosition}
             offsetY={dragYPosition}
@@ -316,7 +284,7 @@ const Timeline: React.ForwardRefRenderFunction<
             startHourCalculated={startHourCalculated}
             currentHour={currentHour}
           />
-        )}
+        }
       </View>
     </GestureHandlerRootView>
   );

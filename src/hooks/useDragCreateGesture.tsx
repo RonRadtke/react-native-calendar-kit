@@ -1,4 +1,3 @@
-import moment from 'moment-timezone';
 import { useRef, useState } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import {
@@ -42,7 +41,6 @@ const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
     viewMode,
     isDragCreateActive,
     useHaptic,
-    tzOffset,
     start,
     navigateDelay,
     heightByTimeInterval,
@@ -102,7 +100,8 @@ const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
       if (isScrolling.current || timeoutRef.current) {
         return;
       }
-      timeoutRef.current = setInterval(() => {
+      // @ts-ignore
+        timeoutRef.current = setInterval(() => {
         goToPrevPage(true);
       }, navigateDelay);
     }
@@ -110,7 +109,8 @@ const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
       if (isScrolling.current || timeoutRef.current) {
         return;
       }
-      timeoutRef.current = setInterval(() => {
+      // @ts-ignore
+        timeoutRef.current = setInterval(() => {
         goToNextPage(true);
       }, navigateDelay);
     }
@@ -155,20 +155,16 @@ const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
     const timeEnd = (event.y + dragCreateInterval) / heightByTimeInterval.value;
 
     const positionIndex = Math.round(event.x / columnWidth);
-    const endDate = pages[viewMode].data[currentIndex.value];
-    const eventStart = moment
-      .tz(endDate, tzOffset)
-      .add(positionIndex, 'd')
-      .add(time, 'h')
-      .add(start, 'h');
-    const isBeforeMinDate = eventStart.isBefore(moment(minDate), 'd');
-    const isAfterMaxDate = eventStart.isAfter(moment(maxDate), 'd');
+    const endDate = pages[viewMode].data[currentIndex.value] || new Date();
+    const eventStart = endDate.add(positionIndex, 'day')
+      .add(time, 'hour')
+      .add(start, 'hour');
+    const isBeforeMinDate = eventStart.isBefore(minDate, 'day');
+    const isAfterMaxDate = eventStart.isAfter(maxDate, 'day');
 
-    const eventEnd = moment
-      .tz(endDate, tzOffset)
-      .add(positionIndex, 'd')
-      .add(timeEnd, 'h')
-      .add(start, 'h');
+    const eventEnd = endDate.add(positionIndex, 'day')
+      .add(timeEnd, 'hour')
+      .add(start, 'hour');
 
     if (isBeforeMinDate || isAfterMaxDate) {
       return;

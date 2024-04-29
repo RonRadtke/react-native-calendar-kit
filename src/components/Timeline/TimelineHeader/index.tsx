@@ -6,7 +6,6 @@ import { DEFAULT_PROPS } from '../../../constants';
 import { useTimelineCalendarContext } from '../../../context/TimelineProvider';
 import type { DayBarItemProps, HighlightDates } from '../../../types';
 import MultipleDayBar from './MultipleDayBar';
-import ProgressBar from './ProgressBar';
 import SingleDayBar from './SingleDayBar';
 
 interface TimelineHeaderProps {
@@ -18,12 +17,11 @@ interface TimelineHeaderProps {
 }
 
 const TimelineHeader = ({
-  renderDayBarItem,
-  onPressDayNum,
-  isLoading,
-  highlightDates,
-  selectedEventId,
-}: TimelineHeaderProps) => {
+                          renderDayBarItem,
+                          onPressDayNum,
+                          highlightDates,
+                          selectedEventId,
+                        }: TimelineHeaderProps) => {
   const {
     syncedLists,
     viewMode,
@@ -41,15 +39,15 @@ const TimelineHeader = ({
   } = useTimelineCalendarContext();
 
   const [startDate, setStartDate] = useState(
-    pages[viewMode].data[pages[viewMode].index] || ''
+    pages[viewMode].data[pages[viewMode].index] || '',
   );
 
   const dayBarIndex = useRef(pages.week.index);
 
   const _renderSingleDayItem = ({
-    item,
-    extraData,
-  }: ListRenderItemInfo<string>) => {
+                                  item,
+                                  extraData,
+                                }: ListRenderItemInfo<string>) => {
     const dayItemProps = {
       width: timelineWidth,
       startDate: item,
@@ -72,9 +70,9 @@ const TimelineHeader = ({
   };
 
   const _renderMultipleDayItem = ({
-    item,
-    extraData,
-  }: ListRenderItemInfo<string>) => {
+                                    item,
+                                    extraData,
+                                  }: ListRenderItemInfo<string>) => {
     const dayItemProps = {
       width: rightSideWidth,
       startDate: item,
@@ -98,7 +96,7 @@ const TimelineHeader = ({
 
   const extraValues = useMemo(
     () => ({ locale, highlightDates, theme, currentDate }),
-    [locale, highlightDates, theme, currentDate]
+    [locale, highlightDates, theme, currentDate],
   );
 
   const _renderDayBarList = () => {
@@ -173,7 +171,7 @@ const TimelineHeader = ({
         runOnJS(setStartDate)(dateByIndex);
       }
     },
-    [viewMode, syncedLists]
+    [viewMode, syncedLists],
   );
 
   const _renderDayBarView = () => {
@@ -204,7 +202,6 @@ const TimelineHeader = ({
     >
       {syncedLists ? _renderDayBarList() : _renderDayBarView()}
       {selectedEventId && <View style={styles.disabledFrame} />}
-      {isLoading && <ProgressBar barColor={theme.loadingBarColor} />}
     </View>
   );
 };
