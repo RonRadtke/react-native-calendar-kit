@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import Animated, { SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { DEFAULT_PROPS } from '../../constants';
-import type { PackedEvent, ThemeProperties } from '../../types';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import Animated, {SharedValue, useAnimatedStyle, withTiming} from 'react-native-reanimated';
+import {DEFAULT_PROPS} from '../../constants';
+import type {PackedEvent, ThemeProperties} from '../../types';
 
 export interface EventBlockProps {
     event: PackedEvent;
@@ -107,7 +107,7 @@ const EventBlock = ({
         <Animated.View
             style={[
                 styles.eventBlock,
-                { opacity: eventOpacity },
+                {opacity: eventOpacity},
                 event.containerStyle,
                 eventStyle,
             ]}
@@ -119,7 +119,7 @@ const EventBlock = ({
                 onLongPress={_onLongPress}
                 style={[
                     StyleSheet.absoluteFill,
-                    { backgroundColor: event.color || EVENT_DEFAULT_COLOR },
+                    {backgroundColor: event.color || EVENT_DEFAULT_COLOR},
                 ]}
                 activeOpacity={0.6}
             >

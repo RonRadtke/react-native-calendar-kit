@@ -1,11 +1,11 @@
 import times from 'lodash/times';
-import React, { useMemo } from 'react';
-import { GestureResponderEvent, StyleSheet, View, ViewStyle } from 'react-native';
-import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
-import { COLUMNS } from '../../constants';
-import { useTimelineCalendarContext } from '../../context/TimelineProvider';
-import type { EventItem, PackedEvent, UnavailableItemProps } from '../../types';
-import { convertPositionToISOString, divideEventsByColumns } from '../../utils';
+import React, {useMemo} from 'react';
+import {GestureResponderEvent, StyleSheet, View, ViewStyle} from 'react-native';
+import Animated, {SharedValue, useAnimatedStyle} from 'react-native-reanimated';
+import {COLUMNS} from '../../constants';
+import {useTimelineCalendarContext} from '../../context/TimelineProvider';
+import type {EventItem, PackedEvent, UnavailableItemProps} from '../../types';
+import {convertPositionToISOString, divideEventsByColumns} from '../../utils';
 import EventBlock from './EventBlock';
 import NowIndicator from './NowIndicator';
 import TimelineBoard from './TimelineBoard';
@@ -38,7 +38,6 @@ const TimelinePage = ({
                           onLongPressBackground,
                           onPressOutBackground,
                           isLoading,
-                          holidays,
                           events,
                           onPressEvent,
                           onLongPressEvent,
@@ -158,7 +157,7 @@ const TimelinePage = ({
                         _renderEvent(event, dayIndex),
                     )}
                 </View>
-                {showNowIndicator && isToday && (
+                {showNowIndicator && isToday &&
                     <NowIndicator
                         timeIntervalHeight={heightByTimeInterval}
                         width={columnWidth}
@@ -168,7 +167,7 @@ const TimelinePage = ({
                         updateCurrentDate={updateCurrentDate}
                         nowIndicatorInterval={nowIndicatorInterval}
                     />
-                )}
+                }
             </React.Fragment>
         );
     };
@@ -177,24 +176,23 @@ const TimelinePage = ({
         <View
             style={[
                 styles.container,
-                { width: viewMode === 'day' ? timelineWidth : rightSideWidth },
+                {width: viewMode === 'day' ? timelineWidth : rightSideWidth},
             ]}
         >
-            {viewMode === 'day' && <TimelineHours />}
+            {viewMode === 'day' && <TimelineHours/>}
             <Animated.View
-                style={[{ width: rightSideWidth, marginTop: spaceFromTop }, boardStyle]}
+                style={[{width: rightSideWidth, marginTop: spaceFromTop}, boardStyle]}
             >
                 <TimelineBoard
                     startDate={startDate}
                     onPressBackgroundHandler={_onPressBackgroundHandler}
-                    holidays={holidays}
                     renderCustomUnavailableItem={renderCustomUnavailableItem}
                     renderHalfLineCustom={renderHalfLineCustom}
                     halfLineContainerStyle={halfLineContainerStyle}
                 />
                 {times(COLUMNS[viewMode], _renderTimelineColumn)}
             </Animated.View>
-            {isLoading && <View style={styles.loadingFrame} />}
+            {isLoading && <View style={styles.loadingFrame}/>}
         </View>
     );
 };
@@ -209,5 +207,5 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         backgroundColor: 'rgba(255,255,255,0)',
     },
-    eventsContainer: { ...StyleSheet.absoluteFillObject, overflow: 'hidden' },
+    eventsContainer: {...StyleSheet.absoluteFillObject, overflow: 'hidden'},
 });

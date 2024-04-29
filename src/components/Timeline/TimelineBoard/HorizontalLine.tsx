@@ -1,7 +1,7 @@
-import React, { memo } from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import { useTimelineCalendarContext } from '../../../context/TimelineProvider';
+import React, {memo} from 'react';
+import {StyleSheet, ViewStyle} from 'react-native';
+import Animated, {useAnimatedStyle} from 'react-native-reanimated';
+import {useTimelineCalendarContext} from '../../../context/TimelineProvider';
 
 interface HorizontalLineProps {
     hourIndex: number;
@@ -14,7 +14,7 @@ const HorizontalLine = ({
                             renderHalfLineCustom,
                             containerStyle,
                         }: HorizontalLineProps) => {
-    const { timeIntervalHeight, theme, rightSideWidth } =
+    const {timeIntervalHeight, theme, rightSideWidth} =
         useTimelineCalendarContext();
 
     const horizontalStyle = useAnimatedStyle(() => {
@@ -28,7 +28,7 @@ const HorizontalLine = ({
             pointerEvents="box-none"
             style={[
                 styles.line,
-                { width: rightSideWidth, backgroundColor: theme.cellBorderColor },
+                {width: rightSideWidth, backgroundColor: theme.cellBorderColor},
                 containerStyle,
                 horizontalStyle,
             ]}

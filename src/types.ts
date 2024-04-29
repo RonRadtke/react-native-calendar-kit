@@ -1,5 +1,5 @@
-import type { GestureResponderEvent, StyleProp, TextStyle, ViewStyle } from 'react-native';
-import type { SharedValue } from 'react-native-reanimated';
+import type {GestureResponderEvent, StyleProp, TextStyle, ViewStyle} from 'react-native';
+import type {SharedValue} from 'react-native-reanimated';
 
 export interface TimelineCalendarHandle {
     goToDate: (props?: {
@@ -354,18 +354,6 @@ export interface RangeTime {
     end: string;
 }
 
-export interface UnavailableHour {
-    start: number;
-    end: number;
-}
-
-export type UnavailableHoursStyle = Record<
-    string,
-    {
-        top: number;
-        height: number;
-    }[]
->;
 
 export interface EventItem {
     /** Unique ID for the event. */

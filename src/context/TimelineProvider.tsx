@@ -1,13 +1,14 @@
-import type { FlashList } from '@shopify/flash-list';
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { PixelRatio, ScrollView, useWindowDimensions } from 'react-native';
-import type { GestureType } from 'react-native-gesture-handler';
-import { SharedValue, useDerivedValue, useSharedValue } from 'react-native-reanimated';
-import { COLUMNS, DEFAULT_PROPS } from '../constants';
+import type {FlashList} from '@shopify/flash-list';
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
+import {PixelRatio, ScrollView, useWindowDimensions} from 'react-native';
+import type {GestureType} from 'react-native-gesture-handler';
+import {SharedValue, useDerivedValue, useSharedValue} from 'react-native-reanimated';
+import {COLUMNS, DEFAULT_PROPS} from '../constants';
 import useDeepCompare from '../hooks/useDeepCompare';
-import type { CalendarViewMode, TimelineProviderProps, UnavailableHour } from '../types';
-import { calculateDates, calculateHours, getCurrentDate, getTheme } from '../utils';
-import { startOfDay } from 'date-fns';
+import type {CalendarViewMode, TimelineProviderProps} from '../types';
+import {calculateDates, calculateHours, getCurrentDate, getTheme} from '../utils';
+import {startOfDay} from 'date-fns';
+import {stringToDate} from 'app/util/Time';
 
 type CustomTimelineProviderProps = Required<
     Omit<
@@ -15,14 +16,13 @@ type CustomTimelineProviderProps = Required<
         | 'initialDate'
         | 'minTimeIntervalHeight'
         | 'maxTimeIntervalHeight'
-        | 'unavailableHours'
         | 'hourFormat'
         | 'calendarWidth'
     >
 >;
 
 interface TimelineCalendarContextValue extends CustomTimelineProviderProps {
-    pages: { [key in CalendarViewMode]: { data: Date[]; index: number } };
+    pages: { [key in CalendarViewMode]: { data: string[]; index: number } };
     hours: { text: string; hourNumber: number }[];
     initialDate: React.MutableRefObject<Date>;
     dayBarListRef: React.RefObject<FlashList<string>>;
@@ -44,9 +44,6 @@ interface TimelineCalendarContextValue extends CustomTimelineProviderProps {
     totalPages: { [key in CalendarViewMode]: number };
     isScrolling: React.MutableRefObject<boolean>;
     offsetY: SharedValue<number>;
-    unavailableHours?:
-        | UnavailableHour[]
-        | { [weekDay: string]: UnavailableHour[] };
     firstDate: React.MutableRefObject<{ [key in CalendarViewMode]?: Date }>;
     isDragCreateActive: SharedValue<boolean>;
     pinchRef: React.MutableRefObject<GestureType | undefined>;
@@ -88,7 +85,6 @@ const TimelineProvider: React.FC<TimelineProviderProps> = (props) => {
         dragCreateInterval = DEFAULT_PROPS.DRAG_CREATE_INTERVAL,
         dragStep = DEFAULT_PROPS.DRAG_STEP,
         showNowIndicator = true,
-        unavailableHours,
         overlapEventsSpacing = DEFAULT_PROPS.OVERLAP_EVENTS_SPACING,
         rightEdgeSpacing = DEFAULT_PROPS.RIGHT_EDGE_SPACING,
         scrollToNow = true,
@@ -102,7 +98,7 @@ const TimelineProvider: React.FC<TimelineProviderProps> = (props) => {
         calendarWidth,
     } = props;
 
-    const { width: windowWidth } = useWindowDimensions();
+    const {width: windowWidth} = useWindowDimensions();
 
     const timelineWidth = calendarWidth || windowWidth;
 
@@ -111,7 +107,7 @@ const TimelineProvider: React.FC<TimelineProviderProps> = (props) => {
     const timelineHorizontalListRef = useRef<FlashList<string>>(null);
     const timelineVerticalListRef = useRef<ScrollView>(null);
     const initialDate = useRef(initDate);
-    const timelineLayoutRef = useRef({ width: 0, height: 0 });
+    const timelineLayoutRef = useRef({width: 0, height: 0});
     const isScrolling = useRef(false);
     const pinchRef = useRef();
 
@@ -221,7 +217,6 @@ const TimelineProvider: React.FC<TimelineProviderProps> = (props) => {
             allowDragToCreate,
             dragCreateInterval,
             dragStep,
-            unavailableHours,
             showNowIndicator,
             firstDate,
             overlapEventsSpacing,
@@ -269,7 +264,6 @@ const TimelineProvider: React.FC<TimelineProviderProps> = (props) => {
         allowDragToCreate,
         dragCreateInterval,
         dragStep,
-        unavailableHours,
         showNowIndicator,
         overlapEventsSpacing,
         rightEdgeSpacing,
@@ -299,7 +293,7 @@ const TimelineProvider: React.FC<TimelineProviderProps> = (props) => {
         // Scroll to current date when viewMode is changed
         const numOfDays =
             viewMode === 'workWeek' ? COLUMNS.week : COLUMNS[viewMode];
-        const currentDay = startDate;
+        const currentDay = stringToDate(startDate);
         const firstDateMoment = firstDate.current[viewMode];
         // @ts-ignore
         const diffDays = startOfDay(currentDay).diff(firstDateMoment, 'day');

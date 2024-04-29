@@ -1,16 +1,16 @@
-import { useRef, useState } from 'react';
-import type { GestureResponderEvent } from 'react-native';
-import { Gesture, GestureUpdateEvent, PanGestureHandlerEventPayload } from 'react-native-gesture-handler';
-import { Easing, runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
-import { useTimelineCalendarContext } from '../context/TimelineProvider';
-import { roundTo, triggerHaptic } from '../utils';
+import {useRef, useState} from 'react';
+import type {GestureResponderEvent} from 'react-native';
+import {Gesture, GestureUpdateEvent, PanGestureHandlerEventPayload} from 'react-native-gesture-handler';
+import {Easing, runOnJS, useAnimatedReaction, useSharedValue, withTiming} from 'react-native-reanimated';
+import {useTimelineCalendarContext} from '../context/TimelineProvider';
+import {roundTo, stringToDate_calendar, triggerHaptic} from '../utils';
 import useTimelineScroll from './useTimelineScroll';
 
 interface useDragCreateGesture {
     onDragCreateEnd?: (data: { start: string; end: string }) => void;
 }
 
-const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
+const useDragCreateGesture = ({onDragCreateEnd}: useDragCreateGesture) => {
     const {
         timeIntervalHeight,
         spaceFromTop,
@@ -35,7 +35,7 @@ const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
         navigateDelay,
         heightByTimeInterval,
     } = useTimelineCalendarContext();
-    const { goToNextPage, goToPrevPage, goToOffsetY } = useTimelineScroll();
+    const {goToNextPage, goToPrevPage, goToOffsetY} = useTimelineScroll();
 
     const [isDraggingCreate, setIsDraggingCreate] = useState(false);
 
@@ -56,7 +56,7 @@ const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
         const calcX = positionIndex * columnWidth;
 
         const startY = yPosition + offsetY.value - spaceFromTop;
-        const subtractHour = (dragCreateInterval / 60) * heightByTimeInterval.value;
+        const subtractHour = dragCreateInterval / 60 * heightByTimeInterval.value;
         const originalTime = (startY - subtractHour) / heightByTimeInterval.value;
         const roundedHour = roundTo(originalTime, nearestMinutes, 'up');
         const calcY = roundedHour * heightByTimeInterval.value;
@@ -71,7 +71,7 @@ const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
     const calcStartPosition = (yPosition: number, nearestMinutes: number) => {
         'worklet';
         const startY = yPosition + offsetY.value - spaceFromTop;
-        const subtractHour = (dragCreateInterval / 60) * heightByTimeInterval.value;
+        const subtractHour = dragCreateInterval / 60 * heightByTimeInterval.value;
         const originalTime = (startY - subtractHour) / heightByTimeInterval.value;
         const roundedHour = roundTo(originalTime, nearestMinutes, 'up');
         const calcY = roundedHour * heightByTimeInterval.value;
@@ -121,7 +121,7 @@ const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
             goToOffsetY(targetOffset);
         }
 
-        const subtractHour = (dragCreateInterval / 60) * timeIntervalHeight.value;
+        const subtractHour = dragCreateInterval / 60 * timeIntervalHeight.value;
         const yInPage = dragYPosition.value + subtractHour + spaceFromTop;
         const pageSize = timelineLayoutRef.current.height;
         const currentY = startY + offsetY.value + subtractHour;
@@ -145,7 +145,7 @@ const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
         const timeEnd = (event.y + dragCreateInterval) / heightByTimeInterval.value;
 
         const positionIndex = Math.round(event.x / columnWidth);
-        const endDate = pages[viewMode].data[currentIndex.value] || new Date();
+        const endDate = stringToDate_calendar(pages[viewMode].data[currentIndex.value]) || new Date();
         const eventStart = endDate.add(positionIndex, 'day')
             .add(time, 'hour')
             .add(start, 'hour');
@@ -175,7 +175,7 @@ const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
                 return;
             }
 
-            const { x, y } = calcPosition(event.x, event.y, dragStep);
+            const {x, y} = calcPosition(event.x, event.y, dragStep);
             if (dragXPosition.value !== x || dragYPosition.value !== y) {
                 dragXPosition.value = withTiming(x, {
                     duration: 100,
@@ -243,7 +243,7 @@ const useDragCreateGesture = ({ onDragCreateEnd }: useDragCreateGesture) => {
         isDragCreateActive.value = true;
         const posX = e.nativeEvent.locationX + hourWidth;
         const posY = e.nativeEvent.locationY + spaceFromTop - offsetY.value;
-        const { x, y } = calcPosition(posX, posY, dragStep);
+        const {x, y} = calcPosition(posX, posY, dragStep);
         calcStartPosition(posY, dragStep);
         dragXPosition.value = x;
         dragYPosition.value = y;

@@ -1,10 +1,10 @@
-import { Gesture } from 'react-native-gesture-handler';
-import { runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
-import { useTimelineCalendarContext } from '../context/TimelineProvider';
-import { clampValues } from '../utils';
+import {Gesture} from 'react-native-gesture-handler';
+import {runOnJS, useAnimatedReaction, useSharedValue, withTiming} from 'react-native-reanimated';
+import {useTimelineCalendarContext} from '../context/TimelineProvider';
+import {clampValues} from '../utils';
 import useTimelineScroll from './useTimelineScroll';
 
-const useZoomGesture = ({ enabled }: { enabled: boolean }) => {
+const useZoomGesture = ({enabled}: { enabled: boolean }) => {
     const {
         timeIntervalHeight,
         maxTimeIntervalHeight,
@@ -15,7 +15,7 @@ const useZoomGesture = ({ enabled }: { enabled: boolean }) => {
         isPinchActive,
         spaceFromTop,
     } = useTimelineCalendarContext();
-    const { goToOffsetY } = useTimelineScroll();
+    const {goToOffsetY} = useTimelineScroll();
     const focalY = useSharedValue(0);
 
     const _handleScrollView = (currentHeight: number, prevHeight: number) => {
@@ -68,7 +68,7 @@ const useZoomGesture = ({ enabled }: { enabled: boolean }) => {
         })
         .withRef(pinchRef);
 
-    return { zoomGesture };
+    return {zoomGesture};
 };
 
 export default useZoomGesture;

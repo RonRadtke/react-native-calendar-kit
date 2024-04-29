@@ -1,10 +1,10 @@
-import { merge } from 'lodash';
-import { Platform } from 'react-native';
-import { DEFAULT_PROPS, SECONDS_IN_DAY } from './constants';
-import type { EventItem, PackedEvent, ThemeProperties } from './types';
-import { startOfDay } from 'date-fns';
+import {merge} from 'lodash';
+import {Platform} from 'react-native';
+import {DEFAULT_PROPS, SECONDS_IN_DAY} from './constants';
+import type {EventItem, PackedEvent, ThemeProperties} from './types';
+import {startOfDay} from 'date-fns';
 
-type DateData = { data: Date[]; index: number };
+type DateData = { data: string[]; index: number };
 
 export const calculateDates = (
     initialFirstDay: number,
@@ -12,10 +12,10 @@ export const calculateDates = (
     maxDate: Date,
     initialDate: Date,
 ) => {
-    let day: DateData = { data: [], index: -1 },
-        week: DateData = { data: [], index: -1 },
-        threeDays: DateData = { data: [], index: -1 },
-        workWeek: DateData = { data: [], index: -1 };
+    let day: DateData = {data: [], index: -1},
+        week: DateData = {data: [], index: -1},
+        threeDays: DateData = {data: [], index: -1},
+        workWeek: DateData = {data: [], index: -1};
 
     const minDateUnix = minDate.unix();
     const maxDateUnix = maxDate.unix();
@@ -46,22 +46,23 @@ export const calculateDates = (
     for (let dayIndex = 0; dayIndex < totalDays; dayIndex++) {
         const currentUnix = minWeekDateUnix + dayIndex * SECONDS_IN_DAY;
         const currdt = minWeekDate.add(dayIndex, 'day');
+        const currdtstr = currdt.format('dd-MM-yyyy');
         if (startDay === currentUnix) {
             if (currentUnix <= maxDateUnix) {
-                day.data.push(currdt);
+                day.data.push(currdtstr);
             }
             startDay = currentUnix + SECONDS_IN_DAY;
         }
         if (startWorkWeekDate === currentUnix) {
-            workWeek.data.push(currdt);
+            workWeek.data.push(currdtstr);
             startWorkWeekDate = currentUnix + 7 * SECONDS_IN_DAY;
         }
         if (startWeekDate === currentUnix) {
-            week.data.push(currdt);
+            week.data.push(currdtstr);
             startWeekDate = currentUnix + 7 * SECONDS_IN_DAY;
         }
         if (startThreeDays === currentUnix && startThreeDays <= maxDateUnix) {
-            threeDays.data.push(currdt);
+            threeDays.data.push(currdtstr);
             startThreeDays = currentUnix + 3 * SECONDS_IN_DAY;
         }
         if (currdt.isSame(initialDate, 'second')) {
@@ -72,7 +73,7 @@ export const calculateDates = (
         }
     }
 
-    return { day, week, threeDays, workWeek };
+    return {day, week, threeDays, workWeek};
 };
 
 export const calculateHours = (
@@ -127,7 +128,7 @@ export const groupEventsByDate = (
         const endEvent = startOfDay(event.end);
         const diffDays = endEvent.diff(startEvent, 'day');
         for (let i = 0; i <= diffDays; i++) {
-            const dateStr = startEvent.add(i, 'day').format('DD-MM-YYYY');
+            const dateStr = startEvent.add(i, 'day').format('dd-MM-yyyy');
             const prevEvents = groupedEvents[dateStr] || [];
             groupedEvents[dateStr] = [...prevEvents, event];
         }
@@ -190,14 +191,14 @@ const packOverlappingEventGroup = (
     calculatedEvents: PackedEvent[],
     populateOptions: PopulateOptions,
 ) => {
-    const { columnWidth, rightEdgeSpacing, overlapEventsSpacing } =
+    const {columnWidth, rightEdgeSpacing, overlapEventsSpacing} =
         populateOptions;
 
     columns.forEach((column, columnIndex) => {
         column.forEach((event) => {
             const totalWidth = columnWidth - rightEdgeSpacing;
             const columnSpan = calcColumnSpan(event, columnIndex, columns);
-            const eventLeft = (columnIndex / columns.length) * totalWidth;
+            const eventLeft = columnIndex / columns.length * totalWidth;
 
             let eventWidth = totalWidth * (columnSpan / columns.length);
             if (columnIndex + columnSpan <= columns.length - 1) {
@@ -243,7 +244,7 @@ export const populateEvents = (
         }
         return 0;
     });
-    sortedEvents.forEach(function(ev) {
+    sortedEvents.forEach(function (ev) {
         if (lastEnd !== null && ev.start >= lastEnd) {
             packOverlappingEventGroup(columns, calculatedEvents, options);
             columns = [];
@@ -289,12 +290,12 @@ interface DivideEventsProps {
 }
 
 export const divideEventsByColumns = (props: DivideEventsProps) => {
-    const { events = {}, startDate, columns, ...other } = props;
+    const {events = {}, startDate, columns, ...other} = props;
     let eventsByColumns: EventItem[][] = [];
     const startUnix = startDate.unix();
     for (let i = 0; i < columns; i++) {
         const currentUnix = startUnix + i * SECONDS_IN_DAY;
-        const dateStr = new Date(currentUnix * 1000).format('DD-MM-YYYY');
+        const dateStr = new Date(currentUnix * 1000).format('dd-MM-yyyy');
         let eventsInDate: EventItem[] = [];
         const eventInDate = events[dateStr];
         if (eventInDate) {
@@ -325,9 +326,9 @@ export const getTheme = (
         dragCreateItemBackgroundColor: DEFAULT_PROPS.CREATE_ITEM_BACKGROUND_COLOR,
 
         //Header
-        todayName: { color: DEFAULT_PROPS.PRIMARY_COLOR },
-        todayNumber: { color: DEFAULT_PROPS.WHITE_COLOR },
-        todayNumberContainer: { backgroundColor: DEFAULT_PROPS.PRIMARY_COLOR },
+        todayName: {color: DEFAULT_PROPS.PRIMARY_COLOR},
+        todayNumber: {color: DEFAULT_PROPS.WHITE_COLOR},
+        todayNumberContainer: {backgroundColor: DEFAULT_PROPS.PRIMARY_COLOR},
     };
 
     if (theme) {
@@ -365,9 +366,9 @@ export const getDayBarStyle = (
     }
 
     let style = {
-        dayName: { ...theme[`${styleKey}Name`] },
-        dayNumber: { ...theme[`${styleKey}Number`] },
-        dayNumberContainer: { ...theme[`${styleKey}NumberContainer`] },
+        dayName: {...theme[`${styleKey}Name`]},
+        dayNumber: {...theme[`${styleKey}Number`]},
+        dayNumberContainer: {...theme[`${styleKey}NumberContainer`]},
     };
 
     if (!isToday) {
@@ -393,7 +394,7 @@ export const triggerHaptic = () => {
             ignoreAndroidSystemSettings: false,
         };
         const hapticFeedback = require('react-native-haptic-feedback').default;
-        const type = Platform.select({ ios: 'selection', default: 'soft' });
+        const type = Platform.select({ios: 'selection', default: 'soft'});
         hapticFeedback.trigger(type, options);
     } catch (ex) {
     }
@@ -432,3 +433,9 @@ export const roundTo = (hour: number, step: number, type: 'up' | 'down') => {
     const nextMinutes = Math.floor(totalMinutes / step) * step;
     return nextMinutes / 60;
 };
+
+export function stringToDate_calendar(s: string): Date {
+    if (!s) return new Date();
+    let split = s.split('-');
+    return new Date(parseInt(split[2]), parseInt(split[1]), parseInt(split[0]));
+}

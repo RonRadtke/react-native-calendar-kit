@@ -1,5 +1,5 @@
-import { useCallback } from 'react';
-import { useTimelineCalendarContext } from '../context/TimelineProvider';
+import {useCallback} from 'react';
+import {useTimelineCalendarContext} from '../context/TimelineProvider';
 
 const useTimelineScroll = () => {
     const {

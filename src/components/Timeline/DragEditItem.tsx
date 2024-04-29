@@ -1,12 +1,12 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { Easing, runOnJS, SharedValue, useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { COLUMNS, DEFAULT_PROPS } from '../../constants';
-import { useTimelineCalendarContext } from '../../context/TimelineProvider';
+import React, {memo, useEffect, useRef, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {Gesture, GestureDetector} from 'react-native-gesture-handler';
+import Animated, {Easing, runOnJS, SharedValue, useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
+import {COLUMNS, DEFAULT_PROPS} from '../../constants';
+import {useTimelineCalendarContext} from '../../context/TimelineProvider';
 import useTimelineScroll from '../../hooks/useTimelineScroll';
-import type { PackedEvent, ThemeProperties } from '../../types';
-import { roundTo, triggerHaptic } from '../../utils';
+import type {PackedEvent, ThemeProperties} from '../../types';
+import {roundTo, stringToDate_calendar, triggerHaptic} from '../../utils';
 
 interface DragEditItemProps {
     selectedEvent: PackedEvent;
@@ -51,7 +51,7 @@ const DragEditItem = ({
         start,
         navigateDelay,
     } = useTimelineCalendarContext();
-    const { goToNextPage, goToPrevPage, goToOffsetY } = useTimelineScroll();
+    const {goToNextPage, goToPrevPage, goToOffsetY} = useTimelineScroll();
 
     const event = useRef(selectedEvent).current;
     const leftWithHourColumn = event.leftByIndex! + hourWidth;
@@ -64,7 +64,7 @@ const DragEditItem = ({
     );
 
     const startOffsetY = useSharedValue(0);
-    const startXY = useSharedValue({ x: 0, y: 0 });
+    const startXY = useSharedValue({x: 0, y: 0});
     const translateX = useSharedValue(0);
     const eventTop = useSharedValue(defaultTopPosition);
     const eventHeight = useSharedValue<number>(event.height);
@@ -156,7 +156,7 @@ const DragEditItem = ({
     const recalculateEvent = () => {
         const newLeftPosition = event.leftByIndex! + translateX.value;
         const dayIndex = Math.round(newLeftPosition / columnWidth);
-        const startDate = pages[viewMode].data[currentIndex.value];
+        const startDate = stringToDate_calendar(pages[viewMode].data[currentIndex.value]);
         const currentDate = startDate?.add(dayIndex, 'day')?.add(currentHour.value, 'hour') || new Date();
 
 
@@ -192,7 +192,7 @@ const DragEditItem = ({
                 y: eventTop.value - offsetY.value,
             };
         })
-        .onUpdate(({ translationX, translationY, absoluteX }) => {
+        .onUpdate(({translationX, translationY, absoluteX}) => {
             const initIndex = event.leftByIndex! / columnWidth;
             const maxIndex = COLUMNS[viewMode] - 1;
             const minRounded = -initIndex;
@@ -246,7 +246,7 @@ const DragEditItem = ({
             startHeight.value = eventHeight.value;
         })
         .onUpdate((e) => {
-            const heightOfTenMinutes = (dragStep / 60) * heightByTimeInterval.value;
+            const heightOfTenMinutes = dragStep / 60 * heightByTimeInterval.value;
             const nextHeight = startHeight.value + e.translationY;
             const roundedHeight =
                 Math.ceil(nextHeight / heightOfTenMinutes) * heightOfTenMinutes;
@@ -273,7 +273,7 @@ const DragEditItem = ({
             width: eventWidth.value,
             left: eventLeft.value,
             top: eventTop.value,
-            transform: [{ translateX: translateX.value }],
+            transform: [{translateX: translateX.value}],
         };
     }, []);
 
@@ -301,15 +301,15 @@ const DragEditItem = ({
                         : _renderEventContent()}
                     <GestureDetector gesture={dragDurationGesture}>
                         <View style={styles.indicatorContainer}>
-                            {EditIndicatorComponent ? (
+                            {EditIndicatorComponent ?
                                 EditIndicatorComponent
-                            ) : (
+                                :
                                 <View style={styles.indicator}>
                                     <View
                                         style={[
                                             styles.indicatorLine,
                                             theme.editIndicatorColor
-                                                ? { backgroundColor: theme.editIndicatorColor }
+                                                ? {backgroundColor: theme.editIndicatorColor}
                                                 : undefined,
                                         ]}
                                     />
@@ -317,12 +317,12 @@ const DragEditItem = ({
                                         style={[
                                             styles.indicatorLine,
                                             theme.editIndicatorColor
-                                                ? { backgroundColor: theme.editIndicatorColor }
+                                                ? {backgroundColor: theme.editIndicatorColor}
                                                 : undefined,
                                         ]}
                                     />
                                 </View>
-                            )}
+                            }
                         </View>
                     </GestureDetector>
                 </Animated.View>
@@ -392,7 +392,7 @@ const AnimatedHour = ({
     );
 
     const animatedTextStyles = useAnimatedStyle(() => {
-        return { top: animatedTop.value - 6 };
+        return {top: animatedTop.value - 6};
     });
 
     return (

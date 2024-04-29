@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { DEFAULT_PROPS } from '../../../constants';
-import type { DayBarItemProps } from '../../../types';
-import { getDayBarStyle } from '../../../utils';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {DEFAULT_PROPS} from '../../../constants';
+import type {DayBarItemProps} from '../../../types';
+import {getDayBarStyle} from '../../../utils';
 
 const SingleDayBar = ({
                           width,
@@ -14,12 +14,12 @@ const SingleDayBar = ({
                       }: DayBarItemProps) => {
     const _renderDay = () => {
         const dateByIndex = startDate;
-        const dateStr = dateByIndex.format('DD-MM-YYYY');
-        const [dayNameText, dayNum] = dateByIndex.format('ddd,DD')
+        const dateStr = dateByIndex.format('dd-MM-yyyy');
+        const [dayNameText, dayNum] = dateByIndex.format('ddd')
             .split(',');
         const highlightDate = highlightDates?.[dateStr];
 
-        const { dayName, dayNumber, dayNumberContainer } = getDayBarStyle(
+        const {dayName, dayNumber, dayNumberContainer} = getDayBarStyle(
             currentDate,
             dateByIndex,
             theme,
@@ -55,7 +55,7 @@ const SingleDayBar = ({
         <View
             style={[
                 styles.container,
-                { width, height: DEFAULT_PROPS.DAY_BAR_HEIGHT },
+                {width, height: DEFAULT_PROPS.DAY_BAR_HEIGHT},
             ]}
         >
             {_renderDay()}
@@ -66,8 +66,8 @@ const SingleDayBar = ({
 export default SingleDayBar;
 
 const styles = StyleSheet.create({
-    container: { alignItems: 'center', flexDirection: 'row' },
-    dayItem: { alignItems: 'center', flex: 1 },
+    container: {alignItems: 'center', flexDirection: 'row'},
+    dayItem: {alignItems: 'center', flex: 1},
     dayNumBtn: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -77,6 +77,6 @@ const styles = StyleSheet.create({
         height: 28,
         backgroundColor: DEFAULT_PROPS.WHITE_COLOR,
     },
-    dayName: { color: DEFAULT_PROPS.SECONDARY_COLOR, fontSize: 12 },
-    dayNumber: { color: DEFAULT_PROPS.SECONDARY_COLOR, fontSize: 16 },
+    dayName: {color: DEFAULT_PROPS.SECONDARY_COLOR, fontSize: 12},
+    dayNumber: {color: DEFAULT_PROPS.SECONDARY_COLOR, fontSize: 16},
 });

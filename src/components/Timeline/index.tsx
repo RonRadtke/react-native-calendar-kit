@@ -1,18 +1,18 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useMemo } from 'react';
-import { GestureResponderEvent, LayoutChangeEvent, StyleSheet, View } from 'react-native';
-import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
-import { runOnJS, useAnimatedReaction, withTiming } from 'react-native-reanimated';
-import { COLUMNS, DEFAULT_PROPS } from '../../constants';
-import { useTimelineCalendarContext } from '../../context/TimelineProvider';
+import React, {forwardRef, useEffect, useImperativeHandle, useMemo} from 'react';
+import {GestureResponderEvent, LayoutChangeEvent, StyleSheet, View} from 'react-native';
+import {Gesture, GestureDetector, GestureHandlerRootView} from 'react-native-gesture-handler';
+import {runOnJS, useAnimatedReaction, withTiming} from 'react-native-reanimated';
+import {COLUMNS, DEFAULT_PROPS} from '../../constants';
+import {useTimelineCalendarContext} from '../../context/TimelineProvider';
 import useDragCreateGesture from '../../hooks/useDragCreateGesture';
 import useZoomGesture from '../../hooks/usePinchGesture';
 import useTimelineScroll from '../../hooks/useTimelineScroll';
-import type { TimelineCalendarHandle, TimelineProps } from '../../types';
-import { clampValues, groupEventsByDate } from '../../utils';
+import type {TimelineCalendarHandle, TimelineProps} from '../../types';
+import {clampValues, groupEventsByDate, stringToDate_calendar} from '../../utils';
 import DragCreateItem from './DragCreateItem';
 import TimelineHeader from './TimelineHeader';
 import TimelineSlots from './TimelineSlots';
-import { startOfDay } from 'date-fns';
+import {startOfDay} from 'date-fns';
 
 const Timeline: React.ForwardRefRenderFunction<
     TimelineCalendarHandle,
@@ -59,7 +59,7 @@ const Timeline: React.ForwardRefRenderFunction<
         heightByTimeInterval,
         start,
     } = useTimelineCalendarContext();
-    const { goToNextPage, goToPrevPage, goToOffsetY } = useTimelineScroll();
+    const {goToNextPage, goToPrevPage, goToOffsetY} = useTimelineScroll();
 
     useImperativeHandle<TimelineCalendarHandle, TimelineCalendarHandle>(
         ref,
@@ -130,7 +130,7 @@ const Timeline: React.ForwardRefRenderFunction<
                 const pinchYNormalized = offsetY.value / timeIntervalHeight.value;
                 const pinchYScale = clampedHeight * pinchYNormalized;
                 const y = pinchYScale;
-                timelineVerticalListRef.current?.scrollTo({ x: 0, y, animated: true });
+                timelineVerticalListRef.current?.scrollTo({x: 0, y, animated: true});
                 timeIntervalHeight.value = withTiming(clampedHeight);
             },
         }),
@@ -187,7 +187,7 @@ const Timeline: React.ForwardRefRenderFunction<
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [goToOffsetY, scrollToNow, timelineLayoutRef.current.height]);
 
-    const _onContentLayout = ({ nativeEvent: { layout } }: LayoutChangeEvent) => {
+    const _onContentLayout = ({nativeEvent: {layout}}: LayoutChangeEvent) => {
         if (!minTimeIntervalHeight.value) {
             const minHeight = Math.max(
                 layout.height / (totalHours + 1),
@@ -202,7 +202,7 @@ const Timeline: React.ForwardRefRenderFunction<
         };
     };
 
-    const { zoomGesture } = useZoomGesture({
+    const {zoomGesture} = useZoomGesture({
         enabled: allowPinchToZoom && !selectedEvent?.id,
     });
     const {
@@ -239,7 +239,7 @@ const Timeline: React.ForwardRefRenderFunction<
             if (!onChange) {
                 return;
             }
-            const startDate = pages[viewMode].data[index];
+            const startDate = stringToDate_calendar(pages[viewMode].data[index]);
             if (startDate) {
                 runOnJS(onChange)({
                     length: pages[viewMode].data.length,
@@ -254,7 +254,7 @@ const Timeline: React.ForwardRefRenderFunction<
 
     return (
         <GestureHandlerRootView
-            style={[styles.container, { backgroundColor: theme.backgroundColor }]}
+            style={[styles.container, {backgroundColor: theme.backgroundColor}]}
         >
             {isShowHeader &&
                 <TimelineHeader
@@ -293,6 +293,6 @@ const Timeline: React.ForwardRefRenderFunction<
 export default forwardRef(Timeline);
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
-    content: { flexGrow: 1 },
+    container: {flex: 1},
+    content: {flexGrow: 1},
 });

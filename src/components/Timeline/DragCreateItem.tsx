@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Animated, { runOnJS, SharedValue, useAnimatedReaction, useAnimatedStyle } from 'react-native-reanimated';
-import { DEFAULT_PROPS } from '../../constants';
-import { useTimelineCalendarContext } from '../../context/TimelineProvider';
-import type { ThemeProperties } from '../../types';
+import React, {useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import Animated, {runOnJS, SharedValue, useAnimatedReaction, useAnimatedStyle} from 'react-native-reanimated';
+import {DEFAULT_PROPS} from '../../constants';
+import {useTimelineCalendarContext} from '../../context/TimelineProvider';
+import type {ThemeProperties} from '../../types';
 
 interface DragCreateItemProps {
     offsetX: SharedValue<number>;
@@ -34,7 +34,7 @@ const DragCreateItem = ({
     const animatedStyles = useAnimatedStyle(() => {
         return {
             height: (dragCreateInterval / 60 + (offsetY.value - startHour.value) / 60) * heightByTimeInterval.value,
-            transform: [{ translateX: offsetX.value }, { translateY: startHour.value }],
+            transform: [{translateX: offsetX.value}, {translateY: startHour.value}],
         };
     });
 
@@ -87,7 +87,7 @@ const AnimatedHour = ({
                       }: AnimatedHourProps) => {
     const [time, setTime] = useState('');
     const [timeStart, setTimeStart] = useState('');
-    const { dragCreateInterval } = useTimelineCalendarContext();
+    const {dragCreateInterval} = useTimelineCalendarContext();
 
     const _onChangedTime = (
         hourStr: string | number,
@@ -115,7 +115,7 @@ const AnimatedHour = ({
                 const offset = rHours < 0 ? 24 : 0;
                 const hourStr = rHours + offset < 10 ? '0' + rHours : rHours + offset;
                 const minutesStr = rMinutes < 10 ? '0' + rMinutes : rMinutes;
-                return { hourStr, minutesStr };
+                return {hourStr, minutesStr};
             };
 
             let extra = 0;
@@ -125,10 +125,10 @@ const AnimatedHour = ({
                 extra = -24;
             }
 
-            const convertedTime = hour + extra + (dragCreateInterval / 60);
+            const convertedTime = hour + extra + dragCreateInterval / 60;
             const convertedTimeStart = startHourCalculated.value + extra;
-            const { hourStr, minutesStr } = _displayTime(convertedTime);
-            const { hourStr: hourStrStart, minutesStr: minutesStrStart } = _displayTime(convertedTimeStart);
+            const {hourStr, minutesStr} = _displayTime(convertedTime);
+            const {hourStr: hourStrStart, minutesStr: minutesStrStart} = _displayTime(convertedTimeStart);
             runOnJS(_onChangedTime)(hourStr, minutesStr, hourStrStart, minutesStrStart);
         },
     );
@@ -136,14 +136,14 @@ const AnimatedHour = ({
     // @ts-ignore
     const animatedTextStyles = useAnimatedStyle(() => {
         return {
-            transform: [{ translateY: offsetY.value + dragCreateInterval }],
+            transform: [{translateY: offsetY.value + dragCreateInterval}],
         };
     });
 
     // @ts-ignore
     const animatedTextStylesStart = useAnimatedStyle(() => {
         return {
-            transform: [{ translateY: startHour.value }],
+            transform: [{translateY: startHour.value}],
         };
     });
 
@@ -152,7 +152,7 @@ const AnimatedHour = ({
             <Animated.View
                 style={[
                     styles.hourContainer,
-                    { width: hourWidth - 8 },
+                    {width: hourWidth - 8},
                     // @ts-ignore
                     theme.dragHourContainer,
                     animatedTextStylesStart,
@@ -168,7 +168,7 @@ const AnimatedHour = ({
             <Animated.View
                 style={[
                     styles.hourContainer,
-                    { width: hourWidth - 8 },
+                    {width: hourWidth - 8},
                     // @ts-ignore
                     theme.dragHourContainer,
                     animatedTextStyles,

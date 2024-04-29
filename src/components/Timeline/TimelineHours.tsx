@@ -1,14 +1,14 @@
-import React, { memo } from 'react';
-import { StyleSheet, View } from 'react-native';
-import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
-import { DEFAULT_PROPS } from '../../constants';
-import { useTimelineCalendarContext } from '../../context/TimelineProvider';
-import type { ThemeProperties } from '../../types';
+import React, {memo} from 'react';
+import {StyleSheet, View} from 'react-native';
+import Animated, {SharedValue, useAnimatedStyle} from 'react-native-reanimated';
+import {DEFAULT_PROPS} from '../../constants';
+import {useTimelineCalendarContext} from '../../context/TimelineProvider';
+import type {ThemeProperties} from '../../types';
 
 export type HourItem = { text: string; hourNumber: number };
 
 const TimelineHours = () => {
-    const { hours, hourWidth, timeIntervalHeight, spaceFromTop, theme } =
+    const {hours, hourWidth, timeIntervalHeight, spaceFromTop, theme} =
         useTimelineCalendarContext();
 
     const _renderHour = (hour: HourItem, index: number) => {
@@ -39,7 +39,7 @@ const TimelineHours = () => {
             <View
                 style={[
                     styles.verticalLine,
-                    { top: spaceFromTop, backgroundColor: theme.cellBorderColor },
+                    {top: spaceFromTop, backgroundColor: theme.cellBorderColor},
                 ]}
             />
         </View>
@@ -62,7 +62,7 @@ const HourItem = ({
     theme: ThemeProperties;
 }) => {
     const hourLabelStyle = useAnimatedStyle(() => {
-        return { top: timeIntervalHeight.value * index - 6 + spaceContent };
+        return {top: timeIntervalHeight.value * index - 6 + spaceContent};
     });
 
     return (

@@ -1,20 +1,17 @@
-import React, { memo } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { useTimelineCalendarContext } from '../../../context/TimelineProvider';
-import type { UnavailableHour, UnavailableItemProps } from '../../../types';
+import React, {memo} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {useTimelineCalendarContext} from '../../../context/TimelineProvider';
 
 interface VerticalBlockProps {
     dayIndex: number;
     isOutsideLimit: boolean;
-    unavailableHour?: UnavailableHour[];
     isDayDisabled?: boolean;
-    renderCustomUnavailableItem?: (props: UnavailableItemProps) => JSX.Element;
 }
 
 const VerticalBlock: React.FC<VerticalBlockProps> = ({
                                                          dayIndex,
                                                      }) => {
-    const { columnWidth, theme } = useTimelineCalendarContext();
+    const {columnWidth, theme} = useTimelineCalendarContext();
 
 
     return (
@@ -31,7 +28,7 @@ const VerticalBlock: React.FC<VerticalBlockProps> = ({
             <View
                 style={[
                     styles.verticalLine,
-                    { backgroundColor: theme.cellBorderColor },
+                    {backgroundColor: theme.cellBorderColor},
                 ]}
             />
         </View>
@@ -41,7 +38,7 @@ const VerticalBlock: React.FC<VerticalBlockProps> = ({
 export default memo(VerticalBlock);
 
 const styles = StyleSheet.create({
-    verticalBlock: { position: 'absolute', height: '100%' },
+    verticalBlock: {position: 'absolute', height: '100%'},
     verticalLine: {
         width: 1,
         backgroundColor: '#E8E9ED',

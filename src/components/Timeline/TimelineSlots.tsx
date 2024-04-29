@@ -1,13 +1,14 @@
-import { AnimatedFlashList, ListRenderItemInfo } from '@shopify/flash-list';
-import React, { useEffect, useMemo, useRef } from 'react';
-import { Animated as RNAnimated, GestureResponderEvent, NativeScrollEvent, NativeSyntheticEvent, Platform, StyleSheet, View, ViewabilityConfig, ViewToken } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
-import { useTimelineCalendarContext } from '../../context/TimelineProvider';
-import type { EventItem, PackedEvent, UnavailableItemProps } from '../../types';
+import {AnimatedFlashList, ListRenderItemInfo} from '@shopify/flash-list';
+import React, {useEffect, useMemo, useRef} from 'react';
+import {Animated as RNAnimated, GestureResponderEvent, NativeScrollEvent, NativeSyntheticEvent, Platform, StyleSheet, View, ViewabilityConfig, ViewToken} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
+import Animated, {SharedValue, useAnimatedStyle} from 'react-native-reanimated';
+import {useTimelineCalendarContext} from '../../context/TimelineProvider';
+import type {EventItem, PackedEvent, UnavailableItemProps} from '../../types';
 import DragEditItem from './DragEditItem';
 import TimelineHours from './TimelineHours';
 import TimelinePage from './TimelinePage';
+import {stringToDate_calendar} from 'app/components/Calendar3/utils';
 
 interface TimelineSlotsProps {
     isDragging: boolean;
@@ -74,7 +75,7 @@ const TimelineSlots = ({
     const contentContainerStyle = useAnimatedStyle(() => {
         const containerHeight =
             totalHours * timeIntervalHeight.value + spaceFromTop + spaceFromBottom;
-        return { height: containerHeight };
+        return {height: containerHeight};
     });
 
     const scrollX = useRef(new RNAnimated.Value(0)).current;
@@ -93,7 +94,7 @@ const TimelineSlots = ({
     });
 
     const _onHorizontalScroll = RNAnimated.event(
-        [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+        [{nativeEvent: {contentOffset: {x: scrollX}}}],
         {
             useNativeDriver: true,
             listener: (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -126,10 +127,10 @@ const TimelineSlots = ({
         ],
     );
 
-    const _renderPage = ({ item, extraData }: ListRenderItemInfo<Date>) => {
+    const _renderPage = ({item, extraData}: ListRenderItemInfo<string>) => {
         return (
             <TimelinePage
-                startDate={item}
+                startDate={stringToDate_calendar(item)}
                 isLoading={extraData?.isLoading}
                 holidays={extraData?.holidays}
                 events={extraData?.events}
@@ -170,7 +171,7 @@ const TimelineSlots = ({
     ).current;
 
     const _onVerticalScroll = ({
-                                   nativeEvent: { contentOffset },
+                                   nativeEvent: {contentOffset},
                                }: NativeSyntheticEvent<NativeScrollEvent>) => {
         offsetY.value = contentOffset.y;
     };
@@ -215,7 +216,7 @@ const TimelineSlots = ({
 
         return (
             <React.Fragment>
-                <TimelineHours />
+                <TimelineHours/>
                 <Animated.View style={listSize}>
                     <AnimatedFlashList
                         estimatedItemSize={rightSideWidth}
@@ -240,13 +241,13 @@ const TimelineSlots = ({
             <Animated.View
                 style={[
                     styles.contentContainer,
-                    { width: timelineWidth },
+                    {width: timelineWidth},
                     contentContainerStyle,
                 ]}
             >
                 {_renderSlots()}
             </Animated.View>
-            {!!selectedEvent?.id && (
+            {!!selectedEvent?.id &&
                 <DragEditItem
                     selectedEvent={selectedEvent}
                     onEndDragSelectedEvent={onEndDragSelectedEvent}
@@ -254,7 +255,7 @@ const TimelineSlots = ({
                     EditIndicatorComponent={EditIndicatorComponent}
                     renderEventContent={renderSelectedEventContent || renderEventContent}
                 />
-            )}
+            }
         </ScrollView>
     );
 };
@@ -262,6 +263,6 @@ const TimelineSlots = ({
 export default TimelineSlots;
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
-    contentContainer: { flexDirection: 'row' },
+    container: {flex: 1},
+    contentContainer: {flexDirection: 'row'},
 });

@@ -1,9 +1,9 @@
 import times from 'lodash/times';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { COLUMNS, DEFAULT_PROPS } from '../../../constants';
-import type { DayBarItemProps } from '../../../types';
-import { getDayBarStyle } from '../../../utils';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {COLUMNS, DEFAULT_PROPS} from '../../../constants';
+import type {DayBarItemProps} from '../../../types';
+import {getDayBarStyle} from '../../../utils';
 
 const MultipleDayBar = ({
                             width,
@@ -17,12 +17,12 @@ const MultipleDayBar = ({
                         }: DayBarItemProps) => {
     const _renderDay = (dayIndex: number) => {
         const dateByIndex = startDate.add(dayIndex, 'day');
-        const dateStr = dateByIndex.format('DD-MM-YYYY');
-        const [dayNameText, dayNum] = dateByIndex.format('ddd,DD')
+        const dateStr = dateByIndex.format('dd-MM-yyyy');
+        const [dayNameText, dayNum] = dateByIndex.format('ddd')
             .split(',');
         const highlightDate = highlightDates?.[dateStr];
 
-        const { dayName, dayNumber, dayNumberContainer } = getDayBarStyle(
+        const {dayName, dayNumber, dayNumberContainer} = getDayBarStyle(
             currentDate,
             dateByIndex,
             theme,
@@ -32,7 +32,7 @@ const MultipleDayBar = ({
         return (
             <View
                 key={`${startDate}_${dayIndex}`}
-                style={[styles.dayItem, { width: columnWidth }]}
+                style={[styles.dayItem, {width: columnWidth}]}
             >
                 <Text
                     allowFontScaling={theme.allowFontScaling}
@@ -61,7 +61,7 @@ const MultipleDayBar = ({
         <View
             style={[
                 styles.container,
-                { width, height: DEFAULT_PROPS.DAY_BAR_HEIGHT },
+                {width, height: DEFAULT_PROPS.DAY_BAR_HEIGHT},
             ]}
         >
             {times(COLUMNS[viewMode]).map(_renderDay)}
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    dayItem: { alignItems: 'center' },
+    dayItem: {alignItems: 'center'},
     dayNumBtn: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -86,6 +86,6 @@ const styles = StyleSheet.create({
         height: 28,
         backgroundColor: DEFAULT_PROPS.WHITE_COLOR,
     },
-    dayName: { color: DEFAULT_PROPS.SECONDARY_COLOR, fontSize: 12 },
-    dayNumber: { color: DEFAULT_PROPS.SECONDARY_COLOR, fontSize: 16 },
+    dayName: {color: DEFAULT_PROPS.SECONDARY_COLOR, fontSize: 12},
+    dayNumber: {color: DEFAULT_PROPS.SECONDARY_COLOR, fontSize: 16},
 });
