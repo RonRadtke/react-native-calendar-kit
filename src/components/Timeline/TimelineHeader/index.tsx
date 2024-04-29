@@ -9,7 +9,7 @@ import MultipleDayBar from './MultipleDayBar';
 import SingleDayBar from './SingleDayBar';
 
 interface TimelineHeaderProps {
-  renderDayBarItem?: (props: DayBarItemProps) => JSX.Element;
+    renderDayBarItem?: (props: DayBarItemProps) => JSX.Element;
   onPressDayNum?: (date: string) => void;
   isLoading?: boolean;
   highlightDates?: HighlightDates;
@@ -34,12 +34,11 @@ const TimelineHeader = ({
     columnWidth,
     theme,
     locale,
-    tzOffset,
     currentDate,
   } = useTimelineCalendarContext();
 
   const [startDate, setStartDate] = useState(
-    pages[viewMode].data[pages[viewMode].index] || '',
+    pages[viewMode].data[pages[viewMode].index] || new Date(),
   );
 
   const dayBarIndex = useRef(pages.week.index);
@@ -47,7 +46,7 @@ const TimelineHeader = ({
   const _renderSingleDayItem = ({
                                   item,
                                   extraData,
-                                }: ListRenderItemInfo<string>) => {
+                                }: ListRenderItemInfo<Date>) => {
     const dayItemProps = {
       width: timelineWidth,
       startDate: item,
@@ -58,7 +57,6 @@ const TimelineHeader = ({
       theme: extraData.theme,
       locale: extraData.locale,
       highlightDates: extraData.highlightDates,
-      tzOffset,
       currentDate: extraData.currentDate,
     };
 
@@ -72,7 +70,7 @@ const TimelineHeader = ({
   const _renderMultipleDayItem = ({
                                     item,
                                     extraData,
-                                  }: ListRenderItemInfo<string>) => {
+                                  }: ListRenderItemInfo<Date>) => {
     const dayItemProps = {
       width: rightSideWidth,
       startDate: item,
@@ -83,7 +81,6 @@ const TimelineHeader = ({
       theme: extraData.theme,
       locale: extraData.locale,
       highlightDates: extraData.highlightDates,
-      tzOffset,
       currentDate: extraData.currentDate,
     };
 

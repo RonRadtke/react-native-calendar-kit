@@ -4,70 +4,68 @@ import TimelineProvider from './context/TimelineProvider';
 import type { TimelineCalendarHandle, TimelineCalendarProps } from './types';
 
 const TimelineCalendar: React.ForwardRefRenderFunction<
-  TimelineCalendarHandle,
-  TimelineCalendarProps
+    TimelineCalendarHandle,
+    TimelineCalendarProps
 > = (
-  {
-    renderDayBarItem,
-    onPressDayNum,
-    onDragCreateEnd,
-    onLongPressBackground,
-    onPressBackground,
-    onPressOutBackground,
-    onDateChanged,
-    isLoading,
-    holidays,
-    events,
-    onLongPressEvent,
-    onPressEvent,
-    renderEventContent,
-    selectedEvent,
-    onEndDragSelectedEvent,
-    renderCustomUnavailableItem,
-    highlightDates,
-    onChange,
-    editEventGestureEnabled,
-    renderSelectedEventContent,
-    EditIndicatorComponent,
-    renderHalfLineCustom,
-    halfLineContainerStyle,
-    onTimeIntervalHeightChange,
-    ...timelineProviderProps
-  },
-  ref
+    {
+        renderDayBarItem,
+        onPressDayNum,
+        onDragCreateEnd,
+        onLongPressBackground,
+        onPressBackground,
+        onPressOutBackground,
+        onDateChanged,
+        isLoading,
+        events,
+        onLongPressEvent,
+        onPressEvent,
+        renderEventContent,
+        selectedEvent,
+        onEndDragSelectedEvent,
+        renderCustomUnavailableItem,
+        highlightDates,
+        onChange,
+        editEventGestureEnabled,
+        renderSelectedEventContent,
+        EditIndicatorComponent,
+        renderHalfLineCustom,
+        halfLineContainerStyle,
+        onTimeIntervalHeightChange,
+        ...timelineProviderProps
+    },
+    ref,
 ) => {
-  const timelineProps = {
-    renderDayBarItem,
-    onPressDayNum,
-    onDragCreateEnd,
-    onLongPressBackground,
-    onPressBackground,
-    onPressOutBackground,
-    onDateChanged,
-    isLoading,
-    holidays,
-    events,
-    onLongPressEvent,
-    onPressEvent,
-    renderEventContent,
-    selectedEvent,
-    onEndDragSelectedEvent,
-    renderCustomUnavailableItem,
-    highlightDates,
-    onChange,
-    editEventGestureEnabled,
-    renderSelectedEventContent,
-    EditIndicatorComponent,
-    renderHalfLineCustom,
-    halfLineContainerStyle,
-    onTimeIntervalHeightChange,
-  };
+    const timelineProps = {
+        renderDayBarItem,
+        onPressDayNum,
+        onDragCreateEnd,
+        onLongPressBackground,
+        onPressBackground,
+        onPressOutBackground,
+        onDateChanged,
+        isLoading,
+        events,
+        onLongPressEvent,
+        onPressEvent,
+        renderEventContent,
+        selectedEvent,
+        onEndDragSelectedEvent,
+        renderCustomUnavailableItem,
+        highlightDates,
+        onChange,
+        editEventGestureEnabled,
+        renderSelectedEventContent,
+        EditIndicatorComponent,
+        renderHalfLineCustom,
+        halfLineContainerStyle,
+        onTimeIntervalHeightChange,
+    };
 
-  return (
-    <TimelineProvider {...timelineProviderProps}>
-      <Timeline {...timelineProps} ref={ref} />
-    </TimelineProvider>
-  );
+    return (
+        <TimelineProvider {...timelineProviderProps}>
+            <Timeline {...timelineProps} ref={ref} />
+        </TimelineProvider>
+    );
 };
 
 export default forwardRef(TimelineCalendar);

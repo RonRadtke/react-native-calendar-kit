@@ -20,7 +20,7 @@ declare global {
 
         format(format: string): string;
 
-        diff(other: Date, unit: DatetimeUnit): number
+        diff(other: Date, unit: DatetimeUnit): number;
 
         isSame(other: Date, unit: DatetimeUnit): boolean;
     }
